@@ -21,6 +21,7 @@ function operation() {
   pads.forEach((pad) => {
     pad.addEventListener("click", function (event) {
       const value = event.target.value;
+
       if (event.target.classList.contains("clear")) {
         currentOperand = "";
         previousOperand = "";
@@ -28,7 +29,7 @@ function operation() {
         operator = "";
         display.innerHTML = "0";
         operators.forEach((op) => {
-          op.style.backgroundColor = "white";
+          op.style.backgroundColor = "";
         });
         return;
       } else if (event.target.classList.contains("dot")) {
@@ -36,16 +37,14 @@ function operation() {
         currentOperand += value;
       } else if (event.target.classList.contains("digit")) {
         if (
-          currentOperand.includes(".") &&
-          currentOperand.split(".")[1].length > 0
+          (currentOperand.includes(".") &&
+            currentOperand.split(".")[1].length > 0) ||
+          currentOperand.length > 10
         )
           return;
         currentOperand += value;
       } else if (event.target.classList.contains("operator")) {
-        if (currentOperand == "" && previousOperand == "") return;
-        previousOperand = currentOperand;
-        currentOperand = "";
-        operator = value;
+        operatorFunc(value);
         return;
       } else if (event.target.classList.contains("equal")) {
         if (currentOperand == "" || previousOperand == "") return;
@@ -65,6 +64,37 @@ function operation() {
       display.innerHTML = currentOperand;
     });
   });
+}
+
+let digitsKey = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+let operatorsKey = ["+", "-", "*", "/"];
+
+document.addEventListener("keydown", (event) => {
+  const value = event.key;
+  console.log(value);
+  if (digitsKey.includes(value)) {
+    if (
+      (currentOperand.includes(".") &&
+        currentOperand.split(".")[1].length > 0) ||
+      currentOperand.length > 10
+    )
+      return;
+    currentOperand += value;
+  } else if (operatorsKey.includes(value)) {
+    operatorFunc(value);
+    return;
+  } else if (value == ".") {
+    if (currentOperand.includes(".")) return;
+    currentOperand += value;
+  }
+  display.innerHTML = currentOperand;
+});
+
+function operatorFunc(val) {
+  if (currentOperand == "" && previousOperand == "") return;
+  previousOperand = currentOperand;
+  currentOperand = "";
+  operator = val;
 }
 
 function calculate(firstValue, secondValue, operator) {

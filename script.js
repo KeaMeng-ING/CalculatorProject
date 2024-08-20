@@ -13,7 +13,7 @@ operators.forEach((operator) => {
       op.style.backgroundColor = "";
     });
     // Change background color for the clicked operator
-    event.target.style.backgroundColor = "red";
+    event.target.style.backgroundColor = "#6bceb7";
   });
 });
 
@@ -72,7 +72,7 @@ document.addEventListener("keydown", (event) => {
       operators.forEach((op) => {
         op.style.backgroundColor = "";
       });
-      operatorButton.style.backgroundColor = "red";
+      operatorButton.style.backgroundColor = "#6bceb7";
     }
     console.log(
       `currentOperand ${currentOperand}, previousOperand ${previousOperand}`
@@ -115,7 +115,7 @@ function equalFunc() {
   operator = "";
   previousOperand = "";
   operators.forEach((op) => {
-    op.style.backgroundColor = "white";
+    op.style.backgroundColor = "";
   });
 }
 

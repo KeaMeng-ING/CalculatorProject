@@ -23,14 +23,7 @@ function operation() {
       const value = event.target.value;
 
       if (event.target.classList.contains("clear")) {
-        currentOperand = "";
-        previousOperand = "";
-        result = "";
-        operator = "";
-        display.innerHTML = "0";
-        operators.forEach((op) => {
-          op.style.backgroundColor = "";
-        });
+        clear();
         return;
       } else if (event.target.classList.contains("dot")) {
         if (currentOperand.includes(".")) return;
@@ -47,17 +40,7 @@ function operation() {
         operatorFunc(value);
         return;
       } else if (event.target.classList.contains("equal")) {
-        if (currentOperand == "" || previousOperand == "") return;
-        result = calculate(currentOperand, previousOperand, operator);
-        if (String(result).includes(".")) {
-          result = Number.parseFloat(result).toFixed(1);
-        }
-        currentOperand = result;
-        operator = "";
-        previousOperand = "";
-        operators.forEach((op) => {
-          op.style.backgroundColor = "white";
-        });
+        equalFunc();
       } else if (event.target.classList.contains("backspace")) {
         currentOperand = currentOperand.slice(0, -1);
       }
@@ -81,11 +64,36 @@ document.addEventListener("keydown", (event) => {
       return;
     currentOperand += value;
   } else if (operatorsKey.includes(value)) {
+    const operatorButton = Array.from(operators).find(
+      (op) => op.value === event.key
+    );
+    if (operatorButton) {
+      if (currentOperand == "" && previousOperand == "") return;
+      operators.forEach((op) => {
+        op.style.backgroundColor = "";
+      });
+      operatorButton.style.backgroundColor = "red";
+    }
+    console.log(
+      `currentOperand ${currentOperand}, previousOperand ${previousOperand}`
+    );
     operatorFunc(value);
+    console.log(
+      `currentOperand ${currentOperand}, previousOperand ${previousOperand}`
+    );
+
     return;
   } else if (value == ".") {
     if (currentOperand.includes(".")) return;
     currentOperand += value;
+  } else if (value == "Enter") {
+    equalFunc();
+  } else if (value == "Backspace") {
+    if (currentOperand == "") {
+      clear();
+      return;
+    }
+    currentOperand = currentOperand.slice(0, -1);
   }
   display.innerHTML = currentOperand;
 });
@@ -97,17 +105,42 @@ function operatorFunc(val) {
   operator = val;
 }
 
+function equalFunc() {
+  if (currentOperand == "" || previousOperand == "") return;
+  result = calculate(currentOperand, previousOperand, operator);
+  if (String(result).includes(".")) {
+    result = Number.parseFloat(result).toFixed(1);
+  }
+  currentOperand = result;
+  operator = "";
+  previousOperand = "";
+  operators.forEach((op) => {
+    op.style.backgroundColor = "white";
+  });
+}
+
+function clear() {
+  currentOperand = "";
+  previousOperand = "";
+  result = "";
+  operator = "";
+  display.innerHTML = "0";
+  operators.forEach((op) => {
+    op.style.backgroundColor = "";
+  });
+}
+
 function calculate(firstValue, secondValue, operator) {
   let intValue1 = parseFloat(firstValue);
   let intValue2 = parseFloat(secondValue);
   if (operator == "+") {
     return intValue1 + intValue2;
   } else if (operator == "-") {
-    return intValue1 - intValue2;
+    return intValue2 - intValue1;
   } else if (operator == "*") {
-    return intValue1 * intValue2;
+    return intValue2 * intValue1;
   } else if (operator == "/") {
-    return intValue1 / intValue2;
+    return intValue2 / intValue1;
   } else {
     return "Error";
   }
